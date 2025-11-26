@@ -1,0 +1,5 @@
+export * from './responses/common.schema'
+export * from './responses/deals-list.schema'
+export * from './responses/games.schema'
+export * from './responses/lookup.schema'
+export * from './responses/stats.schema'
