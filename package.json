@@ -1,7 +1,7 @@
 {
 	"name": "isthereanydeal-nodejs",
 	"version": "0.1.0",
-	"description": "Developer-friendly component ecosystem",
+	"description": "Unofficial Node.js library for the IThereAnyDeal API",
 	"homepage": "https://github.com/mattpua/isthereanydeal-nodejs#readme",
 	"bugs": {
 		"url": "https://github.com/mattpua/isthereanydeal-nodejs/issues"
@@ -14,6 +14,12 @@
 		"type": "git",
 		"url": "git+https://github.com/mattpua/isthereanydeal-nodejs.git"
 	},
+	"keywords": [
+		"isthereanydeal",
+		"api",
+		"nodejs",
+		"unofficial"
+	],
 	"scripts": {
 		"build": "bunup",
 		"dev": "bunup --watch",
