@@ -5,13 +5,12 @@ import { ShopsService } from './services/shops.service'
 import { StatsService } from './services/stats.service'
 
 export class IThereAnyDealClient {
-	private readonly _apiKey: string
-	private readonly gamesService: GamesService
-	private readonly lookupService: LookupService
-	private readonly dealsListService: DealsListService
-
-	private readonly statsService: StatsService
-	private readonly shopsService: ShopsService
+	protected _apiKey: string
+	public readonly gamesService: GamesService
+	public readonly lookupService: LookupService
+	public readonly dealsListService: DealsListService
+	public readonly statsService: StatsService
+	public readonly shopsService: ShopsService
 	constructor(apiKey: string) {
 		if (!apiKey) {
 			throw new Error('API key is required')

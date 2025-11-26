@@ -5,7 +5,6 @@ import {
 	GameSchema,
 	PlatformsSchema,
 	PriceSchema,
-	ShopSchema,
 } from './common.schema'
 
 const DealsListSchema: z.ZodObject<
