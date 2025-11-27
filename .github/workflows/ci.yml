@@ -12,6 +12,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
+      # Prevent too many requests otherwise can get rate limited
+      max-parallel: 1
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
 
