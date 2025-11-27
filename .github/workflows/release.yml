@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 permissions:
   contents: write
@@ -13,6 +13,8 @@ jobs:
   release:
     name: Release Package
     runs-on: ubuntu-latest
+    env:
+      IS_THERE_ANY_DEAL_API_KEY: ${{ secrets.IS_THERE_ANY_DEAL_API_KEY }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
