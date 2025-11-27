@@ -2,6 +2,7 @@ import { describe, expect, test } from 'bun:test'
 import { GamesService } from '../src/services/games.service'
 import {
 	getApiKey,
+	getTestAppId,
 	getTestGameId,
 	getTestGameId2,
 	getTestGameTitle,
@@ -73,7 +74,7 @@ describe('GamesService', () => {
 	})
 
 	describe('lookupGame', () => {
-		test('should lookup game correctly by appid', async () => {
+		test('should lookup game correctly by title', async () => {
 			const gamesService = new GamesService(getApiKey())
 			const result = await gamesService.lookupGame({
 				title: getTestGameTitle(),
@@ -83,6 +84,16 @@ describe('GamesService', () => {
 			expect(result.game).toBeDefined()
 			expect(result.game?.slug).toBe('the-witcher-3-wild-hunt-complete-edition')
 			expect(result.game?.title).toBe(getTestGameTitle())
+		})
+
+		test('should lookup game correctly by appid', async () => {
+			const gamesService = new GamesService(getApiKey())
+			const result = await gamesService.lookupGame({
+				appid: getTestAppId(),
+			})
+			expect(result).toBeDefined()
+			expect(result.found).toBe(true)
+			expect(result.game).toBeDefined()
 		})
 
 		test('should fail to lookup game by a non existing title', async () => {

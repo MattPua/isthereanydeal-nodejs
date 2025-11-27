@@ -46,7 +46,7 @@ export class GamesService extends BaseService {
 	 * @returns
 	 */
 	async lookupGame(
-		query: { title: undefined } | { title: string },
+		query: { appid: string | number } | { title: string },
 	): Promise<LookupGameResponse> {
 		const url = this.generateUrl('/lookup/v1', {
 			...query,
