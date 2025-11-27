@@ -4,7 +4,7 @@ import { LookupService } from './services/lookup.service'
 import { ShopsService } from './services/shops.service'
 import { StatsService } from './services/stats.service'
 
-export class IThereAnyDealClient {
+export class IsThereAnyDealClient {
 	protected _apiKey: string
 	public readonly gamesService: GamesService
 	public readonly lookupService: LookupService

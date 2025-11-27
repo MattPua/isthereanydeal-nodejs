@@ -28,9 +28,9 @@ For full information on the API, please see the [documentation](https://docs.ist
 An API key is required to use the library. You can get one by [signing up for a free account](https://isthereanydeal.com/apps/).
 
 ```typescript
-import { IThereAnyDealClient } from 'isthereanydeal-nodejs';
+import { IsThereAnyDealClient } from 'isthereanydeal-nodejs';
 
-const client = new IThereAnyDealClient('your-api-key');
+const client = new IsThereAnyDealClient('your-api-key');
 
 const results = client.games.searchForGame({
 	title: 'The Witcher 3',
