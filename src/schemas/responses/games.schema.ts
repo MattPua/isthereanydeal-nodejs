@@ -122,7 +122,7 @@ const GameInfoResponseSchema: z.ZodObject<{
 				recent: z.ZodNumber
 				day: z.ZodNumber
 				weekly: z.ZodNumber
-				peek: z.ZodNumber
+				peak: z.ZodNumber
 			},
 			z.core.$strip
 		>
@@ -171,7 +171,7 @@ const GameInfoResponseSchema: z.ZodObject<{
 			recent: z.number(),
 			day: z.number(),
 			weekly: z.number(),
-			peek: z.number(),
+			peak: z.number(),
 		})
 		.nullable(),
 	urls: GameUrlsSchema,

@@ -1,6 +1,6 @@
 export abstract class BaseService {
-	protected readonly _apiKey: string
-	protected readonly route: string
+	private readonly _apiKey: string
+	private readonly route: string
 
 	constructor(apiKey: string, route: string) {
 		this._apiKey = apiKey
@@ -25,7 +25,7 @@ export abstract class BaseService {
 			})
 			if (!response.ok) {
 				console.error(response)
-				throw new Error(`Failed to fetch ${url}: ${response.statusText}.`)
+				throw new Error(response.statusText)
 			}
 			return response.json()
 		} catch (error) {
@@ -43,7 +43,7 @@ export abstract class BaseService {
 			})
 			if (!response.ok) {
 				console.error(response)
-				throw new Error(`Failed to fetch ${url}: ${response.statusText}.`)
+				throw new Error(response.statusText)
 			}
 			return response.json()
 		} catch (error) {
