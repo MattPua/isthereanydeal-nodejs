@@ -56,7 +56,7 @@ export class GamesService extends BaseService {
 
 	/**
 	 * Gets the info for a game
-	 * @param id - The ID of the game on IThereAnyDeal (not to be confused with the Steam appid)
+	 * @param id - The ID of the game on IsThereAnyDeal (not to be confused with the Steam appid)
 	 * @returns The info for the game
 	 */ async getGameInfo(id: string): Promise<GameInfoResponse> {
 		const url = this.generateUrl('/info/v2', {

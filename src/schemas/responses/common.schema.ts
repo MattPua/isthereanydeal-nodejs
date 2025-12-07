@@ -42,7 +42,7 @@ export const GameSchema: z.ZodObject<{
 	id: z
 		.string()
 		.describe(
-			'The ID of the game on IThereAnyDeal (not to be confused with the Steam appid)',
+			'The ID of the game on IsThereAnyDeal (not to be confused with the Steam appid)',
 		),
 	slug: z.string(),
 	title: z.string(),
@@ -62,7 +62,7 @@ export const ShopSchema: z.ZodObject<{
 export const GameUrlsSchema: z.ZodObject<{
 	game: z.ZodURL
 }> = z.object({
-	game: z.url().describe('The URL of the game on IThereAnyDeal'),
+	game: z.url().describe('The URL of the game on IsThereAnyDeal'),
 })
 
 export const PlatformsSchema: z.ZodObject<{

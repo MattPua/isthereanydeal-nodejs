@@ -1,17 +1,17 @@
-# IThereAnyDeal Node.js Library (Unofficial)
+# IsThereAnyDeal Node.js Library (Unofficial)
 
 [![npm version](https://img.shields.io/npm/v/isthereanydeal-nodejs.svg?style=flat-square)](https://www.npmjs.com/package/isthereanydeal-nodejs)
 [![npm downloads](https://img.shields.io/npm/dm/isthereanydeal-nodejs.svg?style=flat-square)](https://www.npmjs.com/package/isthereanydeal-nodejs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)](https://github.com/mattpua/isthereanydeal-nodejs/issues)
 
-An unofficial Node.js library for the IThereAnyDeal API written in TypeScript. This library is built with [Bun](https://bun.sh) and [Zod](https://zod.dev).
+An unofficial Node.js library for the IsThereAnyDeal API written in TypeScript. This library is built with [Bun](https://bun.sh) and [Zod](https://zod.dev).
 
-Based on documentation from [IThereAnyDeal](https://docs.isthereanydeal.com/).
+Based on documentation from [IsThereAnyDeal](https://docs.isthereanydeal.com/).
 
-This SDK provides a simple way to interact with different parts of the IThereAnyDeal API. 
+This SDK provides a simple way to interact with different parts of the IsThereAnyDeal API. 
 
-This library is not affiliated with IThereAnyDeal. All trademarks are property of their respective owners in the US and other countries. 
+This library is not affiliated with IsThereAnyDeal. All trademarks are property of their respective owners in the US and other countries. 
 
 ## Installation
 
@@ -80,4 +80,4 @@ MIT
 
 ## Disclaimer
 
-This project is not affiliated with IThereAnyDeal. All trademarks are property of their respective owners in the US and other countries. 
+This project is not affiliated with IsThereAnyDeal. All trademarks are property of their respective owners in the US and other countries. 

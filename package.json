@@ -1,7 +1,7 @@
 {
 	"name": "isthereanydeal-nodejs",
 	"version": "0.1.5",
-	"description": "Unofficial Node.js library for the IThereAnyDeal API",
+	"description": "Unofficial Node.js library for the IsThereAnyDeal API",
 	"homepage": "https://github.com/mattpua/isthereanydeal-nodejs#readme",
 	"bugs": {
 		"url": "https://github.com/mattpua/isthereanydeal-nodejs/issues"
