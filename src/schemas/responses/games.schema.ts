@@ -74,7 +74,7 @@ const GameInfoResponseSchema: z.ZodObject<{
 		>
 	>
 	earlyAccess: z.ZodBoolean
-	achivements: z.ZodBoolean
+	achievements: z.ZodBoolean
 	tradingCards: z.ZodBoolean
 	appid: z.ZodNullable<z.ZodNumber>
 	tags: z.ZodArray<z.ZodString>
@@ -135,7 +135,7 @@ const GameInfoResponseSchema: z.ZodObject<{
 	>
 }> = GameSchema.extend({
 	earlyAccess: z.boolean(),
-	achivements: z.boolean(),
+	achievements: z.boolean(),
 	tradingCards: z.boolean(),
 	appid: z.number().describe('The Steam appid of the game').nullable(),
 	tags: z.array(z.string()),

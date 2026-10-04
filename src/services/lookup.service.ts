@@ -1,12 +1,14 @@
+import type { ApiKeyTransport } from '../client.types'
 import type {
 	LookupGamesByShopIdsResponse,
 	LookupGamesByTitlesResponse,
+	LookupShopIdsByGameIdsResponse,
 } from '../schemas/responses/lookup.schema'
 import { BaseService } from './_base.service'
 
 export class LookupService extends BaseService {
-	constructor(apiKey: string) {
-		super(apiKey, 'lookup')
+	constructor(apiKey: string, apiKeyTransport: ApiKeyTransport = 'header') {
+		super(apiKey, 'lookup', apiKeyTransport)
 	}
 
 	/**
@@ -31,14 +33,28 @@ export class LookupService extends BaseService {
 	 * @param shopGameIds
 	 */
 	async lookupGamesByShopIds(
-		shopId: string,
+		shopId: string | number,
 		shopGameIds: string[],
 	): Promise<LookupGamesByShopIdsResponse> {
-		const url = this.generateUrl(`/id/shop/v1/${shopId}/v1`)
+		const url = this.generateUrl(`/id/shop/${shopId}/v1`)
 		const response = await this.sendPOSTRequest<
 			LookupGamesByShopIdsResponse,
 			string[]
 		>(url, shopGameIds)
 		return response
+	}
+
+	/**
+	 * Looks up shop product IDs for IsThereAnyDeal game IDs.
+	 */
+	async lookupShopIdsByGameIds(
+		shopId: number,
+		gameIds: string[],
+	): Promise<LookupShopIdsByGameIdsResponse> {
+		const url = this.generateUrl(`/shop/${shopId}/id/v1`)
+		return this.sendPOSTRequest<LookupShopIdsByGameIdsResponse, string[]>(
+			url,
+			gameIds,
+		)
 	}
 }

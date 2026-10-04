@@ -1,10 +1,18 @@
+import type { ApiKeyTransport } from '../client.types'
+
 export abstract class BaseService {
 	private readonly _apiKey: string
 	private readonly route: string
+	private readonly apiKeyTransport: ApiKeyTransport
 
-	constructor(apiKey: string, route: string) {
+	constructor(
+		apiKey: string,
+		route: string,
+		apiKeyTransport: ApiKeyTransport = 'header',
+	) {
 		this._apiKey = apiKey
 		this.route = route
+		this.apiKeyTransport = apiKeyTransport
 	}
 
 	get baseUrl(): string {
@@ -18,9 +26,7 @@ export abstract class BaseService {
 		try {
 			const response = await fetch(url, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
+				headers: this.getRequestHeaders(),
 				body: JSON.stringify(body),
 			})
 			if (!response.ok) {
@@ -37,9 +43,7 @@ export abstract class BaseService {
 		try {
 			const response = await fetch(url, {
 				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
+				headers: this.getRequestHeaders(),
 			})
 			if (!response.ok) {
 				console.error(response)
@@ -65,7 +69,17 @@ export abstract class BaseService {
 				url.searchParams.set(key, value.toString())
 			}
 		}
-		url.searchParams.set('key', this._apiKey)
+		if (this.apiKeyTransport === 'query') {
+			url.searchParams.set('key', this._apiKey)
+		}
 		return url.toString()
+	}
+
+	private getRequestHeaders(): Record<string, string> {
+		const headers = { 'Content-Type': 'application/json' }
+		if (this.apiKeyTransport === 'header') {
+			return { ...headers, 'ITAD-API-Key': this._apiKey }
+		}
+		return headers
 	}
 }

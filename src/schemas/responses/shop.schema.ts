@@ -18,3 +18,13 @@ const ShopListItemSchema: z.ZodObject<
 })
 
 export type ShopListItem = z.infer<typeof ShopListItemSchema>
+
+const ShopMapItemSchema: z.ZodObject<{
+	id: z.ZodNumber
+	title: z.ZodString
+}> = z.object({
+	id: z.number(),
+	title: z.string(),
+})
+
+export type ShopMapItem = z.infer<typeof ShopMapItemSchema>

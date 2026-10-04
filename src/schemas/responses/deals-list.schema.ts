@@ -169,3 +169,61 @@ const DealsListSchema: z.ZodObject<
 })
 
 export type DealsList = z.infer<typeof DealsListSchema>
+
+export type DealsFilterRange<T = unknown> = {
+	min?: T | null
+	max?: T | null
+}
+
+export type DealsFilter = Record<string, unknown> & {
+	price?: DealsFilterRange
+	regular?: DealsFilterRange
+	cut?: DealsFilterRange<number>
+	flag?: string
+	hlprice?: number
+	hlperc?: number
+	drm?: number[]
+	platform?: number[]
+	type?: number[]
+	typeNot?: number | null
+	tradingCards?: boolean
+	achievements?: boolean
+	mature?: boolean
+	earlyAccess?: boolean
+	preOrder?: boolean
+	notPreOrder?: boolean
+	bundled?: boolean
+	wasBundled?: boolean
+	neverBundled?: boolean
+	tags?: string[]
+	tagsUnion?: string[]
+	inSpotlight?: boolean
+	wasSpotlight?: boolean
+	inBundle?: number
+	steamPerc?: DealsFilterRange<number>
+	steamCount?: DealsFilterRange<number>
+	metaCritic?: DealsFilterRange<number>
+	metauser?: DealsFilterRange<number>
+	openCritic?: DealsFilterRange<number>
+	shops?: number[]
+	added?: number
+	expiry?: number
+	releaseDays?: number
+	releaseYear?: DealsFilterRange<number>
+	releaseDate?: DealsFilterRange<string>
+}
+
+export interface DealsListOptions {
+	country?: string
+	offset?: number
+	limit?: number
+	sort?: string
+	nondeals?: boolean
+	mature?: boolean
+	shops?: number[] | string
+	filter?: DealsFilter | string
+}
+
+export type DealsListPostOptions = Omit<DealsListOptions, 'filter'> & {
+	filter?: DealsFilter
+}

@@ -32,7 +32,7 @@ import { IsThereAnyDealClient } from 'isthereanydeal-nodejs';
 
 const client = new IsThereAnyDealClient('your-api-key');
 
-const results = client.games.searchForGame({
+const results = client.gamesService.searchForGame({
 	title: 'The Witcher 3',
 	results: 5,
 });
@@ -40,9 +40,40 @@ const results = client.games.searchForGame({
 console.log(results);
 ```
 
+By default, the client sends the API key in the `ITAD-API-Key` request header.
+For environments that require query-string authentication, opt in explicitly:
+
+```typescript
+const client = new IsThereAnyDealClient('your-api-key', {
+	apiKeyTransport: 'query',
+});
+```
+
 ## Features
 
-Currently all methods that do not require OAuth authentication are available. Please see the [documentation](https://docs.isthereanydeal.com/) for more information.
+The client covers the stable API-key endpoints for games, lookup, deals, shops,
+bundles, giveaways, and statistics. OAuth-only, unstable, and internal
+endpoints are not included. See the [IsThereAnyDeal API documentation](https://docs.isthereanydeal.com/)
+for endpoint details.
+
+The client exposes `bundlesService.getBundles(options?)`,
+`giveawaysService.getGiveaways(options?)`, and
+`giveawaysService.getGiveawaysForGame(gameId, options?)` for bundle and giveaway
+lists. `shopsService.getShopMap()` returns the full shop map, while
+`lookupService.lookupShopIdsByGameIds(shopId, gameIds)` maps ITAD game IDs to
+shop product IDs. Deals can be requested with `dealsListService.getDeals(options)`
+or its POST equivalent `dealsListService.getDealsByPost(options)`.
+
+For example, filter deals to games with at least 50% off and any selected tag:
+
+```typescript
+const deals = await client.dealsListService.getDeals({
+	filter: {
+		cut: { min: 50, max: null },
+		tagsUnion: ['RPG'],
+	},
+})
+```
 
 ## Developing Locally
 
@@ -58,16 +89,11 @@ bun install
 
 ## Testing
 
-Please create a `.env.test.local` file with the following content:
-
-```env
-IS_THERE_ANY_DEAL_API_KEY=your-api-key
-```
-
-After which, you can run the tests with the following command:
+The test suite stubs `fetch` and does not require an API key or make production
+API requests. Run it with:
 
 ```bash
-bun test
+bun run test
 ```
 
 ## Contributing
@@ -80,4 +106,4 @@ MIT
 
 ## Disclaimer
 
-This project is not affiliated with IsThereAnyDeal. All trademarks are property of their respective owners in the US and other countries. 
+This project is not affiliated with IsThereAnyDeal. All trademarks are property of their respective owners in the US and other countries.

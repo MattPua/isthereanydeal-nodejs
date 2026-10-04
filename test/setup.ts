@@ -1,37 +1,38 @@
-const apiKey = process.env.IS_THERE_ANY_DEAL_API_KEY
+import { expect } from 'bun:test'
 
-if (!apiKey) {
-	throw new Error('IS_THERE_ANY_DEAL_API_KEY is not set')
+export const API_KEY = 'test-api-key'
+
+export type MockFetchCall = {
+	url: URL
+	init: RequestInit
 }
 
-export function getTestAppId() {
-	// Witcher 3
-	return `292030`
-}
+/** Replaces fetch for one test and restores it after the assertion. */
+export async function withMockFetch<T>(
+	responseBody: unknown,
+	run: (calls: MockFetchCall[]) => Promise<T>,
+): Promise<T> {
+	const originalFetch = globalThis.fetch
+	const calls: MockFetchCall[] = []
 
-export function getTestGameTitle() {
-	// Witcher 3
-	return `The Witcher 3: Wild Hunt - Complete Edition`
-}
+	globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+		const url =
+			input instanceof Request ? new URL(input.url) : new URL(input.toString())
+		calls.push({ url, init: init ?? {} })
+		return new Response(JSON.stringify(responseBody), {
+			status: 200,
+			headers: { 'Content-Type': 'application/json' },
+		})
+	}) as typeof fetch
 
-export function getTestGameId() {
-	// Witcher 3
-	return `018d937f-3a29-72b9-888f-ecbf55a28e80`
-}
-
-export function getTestGameId2() {
-	// Expedition 33
-	return `018ffe0d-15a7-7247-bb3c-4e5e1980561f`
-}
-
-export function getTestShopId() {
-	// Steam
-	return 61
-}
-
-export function getApiKey(): string {
-	if (!apiKey) {
-		throw new Error('IS_THERE_ANY_DEAL_API_KEY is not set')
+	try {
+		return await run(calls)
+	} finally {
+		globalThis.fetch = originalFetch
 	}
-	return apiKey
+}
+
+export function expectApiKeyHeader(call: MockFetchCall) {
+	expect(call.init.headers).toMatchObject({ 'ITAD-API-Key': API_KEY })
+	expect(call.url.searchParams.has('key')).toBe(false)
 }

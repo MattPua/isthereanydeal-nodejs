@@ -1,60 +1,61 @@
 import { describe, expect, test } from 'bun:test'
 import { DealsListService } from '../src/services/deals-list.service'
-import { getApiKey } from './setup'
+import { API_KEY, expectApiKeyHeader, withMockFetch } from './setup'
 
 describe('DealsListService', () => {
-	describe('getDeals', () => {
-		test('should get deals list correctly', async () => {
-			const dealsList = await new DealsListService(getApiKey()).getDeals()
-			expect(dealsList).toBeDefined()
-			expect(dealsList.nextOffset).toBe(20)
-			expect(dealsList.hasMore).toBe(true)
-			expect(dealsList.list.length).toBe(20)
+	test('GETs deals with pagination and the highest-discount default sort', async () => {
+		await withMockFetch(
+			{ list: [], nextOffset: 10, hasMore: false },
+			async (calls) => {
+				const result = await new DealsListService(API_KEY).getDeals({
+					limit: 10,
+				})
 
-			dealsList.list.forEach((app) => {
-				expect(app.id).toBeDefined()
-				expect(app.slug).toBeDefined()
-				expect(app.title).toBeDefined()
-				expect(app.type).toBeDefined()
-				expect(app.assets).toBeDefined()
+				expect(result.list).toEqual([])
+				expect(calls).toHaveLength(1)
+				expect(calls[0].url.pathname).toBe('/deals/v2')
+				expect(calls[0].url.searchParams.get('limit')).toBe('10')
+				expect(calls[0].url.searchParams.get('sort')).toBe('-cut')
+				expect(calls[0].init.method).toBe('GET')
+				expectApiKeyHeader(calls[0])
+			},
+		)
+	})
 
-				expect(app.deal).toBeDefined()
-				expect(app.deal.price).toBeDefined()
-				expect(app.deal.regular).toBeDefined()
-				expect(app.deal.cut).toBeDefined()
-				expect(app.deal.voucher).toBeDefined()
-				expect(app.deal.storeLow).toBeDefined()
-				expect(app.deal.historyLow).toBeDefined()
-				expect(app.deal.historyLow_1y).toBeDefined()
-				expect(app.deal.historyLow_3m).toBeDefined()
-				expect(app.deal.flag).toBeDefined()
-				expect(app.deal.drm).toBeDefined()
-				expect(app.deal.platforms).toBeDefined()
-				expect(app.deal.timestamp).toBeDefined()
-				expect(app.deal.expiry).toBeDefined()
+	test('supports JSON-object filters in GET query params', async () => {
+		const filter = { or: [{ price: { lt: 10 } }] }
+		await withMockFetch(
+			{ list: [], nextOffset: 0, hasMore: false },
+			async (calls) => {
+				await new DealsListService(API_KEY).getDeals({ filter })
 
-				expect(app.mature).toBe(false)
-			})
-		})
+				expect(calls[0].url.searchParams.get('filter')).toBe(
+					JSON.stringify(filter),
+				)
+			},
+		)
+	})
 
-		test('should use offset correctly', async () => {
-			const dealsList = await new DealsListService(getApiKey()).getDeals({
-				offset: 10,
-			})
-			expect(dealsList).toBeDefined()
-			expect(dealsList.nextOffset).toBe(30)
-			expect(dealsList.hasMore).toBe(true)
-			expect(dealsList.list.length).toBe(20)
-		})
+	test('POSTs deals options and object filters as JSON', async () => {
+		const options = { country: 'GB', limit: 5, filter: { price: { lt: 10 } } }
+		await withMockFetch(
+			{ list: [], nextOffset: 0, hasMore: false },
+			async (calls) => {
+				await new DealsListService(API_KEY).getDealsByPost(options)
 
-		test('should use limit correctly', async () => {
-			const dealsList = await new DealsListService(getApiKey()).getDeals({
-				limit: 10,
-			})
-			expect(dealsList).toBeDefined()
-			expect(dealsList.nextOffset).toBe(10)
-			expect(dealsList.hasMore).toBe(true)
-			expect(dealsList.list.length).toBe(10)
-		})
+				expect(calls[0].url.pathname).toBe('/deals/v2')
+				expect(calls[0].init.method).toBe('POST')
+				expect(JSON.parse(String(calls[0].init.body))).toEqual({
+					country: 'GB',
+					offset: 0,
+					limit: 5,
+					sort: '-cut',
+					nondeals: false,
+					mature: false,
+					filter: options.filter,
+				})
+				expectApiKeyHeader(calls[0])
+			},
+		)
 	})
 })

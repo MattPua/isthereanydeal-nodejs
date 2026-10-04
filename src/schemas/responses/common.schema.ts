@@ -205,75 +205,45 @@ export const BaseDealSchema: z.ZodObject<{
 	cut: z.number().min(0).max(100),
 })
 
-export const BundleSchema: z.ZodObject<{
-	id: z.ZodNumber
-	title: z.ZodString
-	page: z.ZodObject<
-		{
-			id: z.ZodNumber
-			name: z.ZodString
-			shopId: z.ZodNumber
-		},
-		z.core.$strip
-	>
-	url: z.ZodString
-	details: z.ZodString
-	isMature: z.ZodBoolean
-	publish: z.ZodString
-	expiry: z.ZodNullable<z.ZodString>
-	counts: z.ZodObject<
-		{
-			games: z.ZodNumber
-			media: z.ZodNumber
-		},
-		z.core.$strip
-	>
-	tiers: z.ZodArray<
-		z.ZodObject<
+const BundleTierSchema: z.ZodObject<{
+	price: typeof PriceSchema
+	addon: z.ZodBoolean
+	games: z.ZodArray<typeof GameSchema>
+}> = z.object({
+	price: PriceSchema,
+	addon: z.boolean(),
+	games: z.array(GameSchema),
+})
+
+export const BundleSchema: z.ZodObject<
+	{
+		id: z.ZodNumber
+		title: z.ZodString
+		page: z.ZodObject<
 			{
-				price: z.ZodObject<
-					{
-						amount: z.ZodNumber
-						amountInt: z.ZodNumber
-						currency: z.ZodString
-					},
-					z.core.$strip
-				>
-				games: z.ZodArray<
-					z.ZodObject<
-						{
-							id: z.ZodString
-							slug: z.ZodString
-							title: z.ZodString
-							type: z.ZodNullable<
-								z.ZodEnum<{
-									game: 'game'
-									dlc: 'dlc'
-									package: 'package'
-								}>
-							>
-							mature: z.ZodBoolean
-							assets: z.ZodOptional<
-								z.ZodObject<
-									{
-										boxart: z.ZodOptional<z.ZodURL>
-										banner145: z.ZodOptional<z.ZodString>
-										banner300: z.ZodOptional<z.ZodURL>
-										banner400: z.ZodOptional<z.ZodURL>
-										banner600: z.ZodOptional<z.ZodURL>
-									},
-									z.core.$strip
-								>
-							>
-						},
-						z.core.$strip
-					>
-				>
+				id: z.ZodNumber
+				name: z.ZodString
+				shopId: z.ZodNumber
 			},
 			z.core.$strip
 		>
-	>
-}> = z.object({
+		url: z.ZodString
+		details: z.ZodString
+		isMature: z.ZodBoolean
+		publish: z.ZodString
+		expiry: z.ZodNullable<z.ZodString>
+		note: z.ZodNullable<z.ZodString>
+		counts: z.ZodObject<
+			{
+				games: z.ZodNumber
+				media: z.ZodNumber
+			},
+			z.core.$strip
+		>
+		tiers: z.ZodArray<typeof BundleTierSchema>
+	},
+	z.core.$strip
+> = z.object({
 	id: z.number(),
 	title: z.string(),
 	page: z.object({
@@ -286,16 +256,12 @@ export const BundleSchema: z.ZodObject<{
 	isMature: z.boolean(),
 	publish: z.string(),
 	expiry: z.string().nullable(),
+	note: z.string().nullable(),
 	counts: z.object({
 		games: z.number(),
 		media: z.number(),
 	}),
-	tiers: z.array(
-		z.object({
-			price: PriceSchema,
-			games: z.array(GameSchema),
-		}),
-	),
+	tiers: z.array(BundleTierSchema),
 })
 
 export type Assets = z.infer<typeof AssetsSchema>
@@ -308,6 +274,7 @@ export type Price = z.infer<typeof PriceSchema>
 export type HistoricLowPrice = z.infer<typeof HistoricLowPriceSchema>
 export type BaseDeal = z.infer<typeof BaseDealSchema>
 export type Bundle = z.infer<typeof BundleSchema>
+export type BundleTier = z.infer<typeof BundleTierSchema>
 export type DRM = z.infer<typeof DRMSchema>
 
 export type HistoricStoreLowPrice = z.infer<typeof HistoricStoreLowPriceSchema>

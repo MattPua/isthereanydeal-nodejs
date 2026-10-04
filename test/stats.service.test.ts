@@ -1,122 +1,66 @@
 import { describe, expect, test } from 'bun:test'
 import { StatsService } from '../src/services/stats.service'
-import { getApiKey, getTestGameId } from './setup'
+import { API_KEY, expectApiKeyHeader, withMockFetch } from './setup'
+
+const GAME_ID = '018d937f-3a29-72b9-888f-ecbf55a28e80'
 
 describe('StatsService', () => {
-	describe('waitlistStats', () => {
-		test('should get waitlist stats correctly', async () => {
-			const statsService = new StatsService(getApiKey())
-			const stats = await statsService.waitlistStats(getTestGameId())
-			expect(stats).toBeDefined()
-			expect(stats.count).toBeGreaterThan(0)
-			expect(stats.price).toBeDefined()
-			expect(stats.cut).toBeDefined()
-		})
+	test('loads waitlist stats with custom country and bucket sizes', async () => {
+		await withMockFetch({}, async (calls) => {
+			await new StatsService(API_KEY).waitlistStats(GAME_ID, {
+				country: 'GB',
+				bucket_price: 5,
+				bucket_cut: 40,
+			})
 
-		test('should get waitlist stats correctly with custom bucket sizes', async () => {
-			const statsService = new StatsService(getApiKey())
-			const bucketPrice = 5
-			const bucketCut = 40
-			const stats = await statsService.waitlistStats(getTestGameId(), {
-				bucket_price: bucketPrice,
-				bucket_cut: bucketCut,
-			})
-			expect(stats).toBeDefined()
-			stats.price.buckets.forEach((bucket) => {
-				if (bucket.price) {
-					expect(bucket.price).toBeLessThanOrEqual(bucketPrice)
-				}
-			})
-			stats.cut.buckets.forEach((bucket) => {
-				if (bucket.price) {
-					expect(bucket.price).toBeLessThanOrEqual(bucketCut)
-				}
-			})
-		})
-
-		test('should get waitlist stats correctly with custom country', async () => {
-			const statsService = new StatsService(getApiKey())
-			const country = 'GB'
-			const stats = await statsService.waitlistStats(getTestGameId(), {
-				country: country,
-			})
-			expect(stats).toBeDefined()
-			expect(stats.price.currency).toBe('GBP')
+			expect(calls[0].url.pathname).toBe('/stats/waitlist/v1')
+			expect(calls[0].url.searchParams.get('id')).toBe(GAME_ID)
+			expect(calls[0].url.searchParams.get('country')).toBe('GB')
+			expect(calls[0].url.searchParams.get('bucket_price')).toBe('5')
+			expect(calls[0].url.searchParams.get('bucket_cut')).toBe('40')
+			expectApiKeyHeader(calls[0])
 		})
 	})
 
-	describe('getMostWaitlistedGames', () => {
-		test('should get most waitlisted games correctly', async () => {
-			const statsService = new StatsService(getApiKey())
-			const games = await statsService.getMostWaitlistedGames()
-			expect(games).toBeDefined()
-			expect(games.length).toBeGreaterThan(0)
-			games.forEach((game, index) => {
-				expect(game.position).toBe(index + 1)
+	test('loads most-waitlisted games with pagination', async () => {
+		await withMockFetch([], async (calls) => {
+			await new StatsService(API_KEY).getMostWaitlistedGames({
+				offset: 10,
+				limit: 5,
 			})
-		})
 
-		test('should get most waitlisted games correctly with custom offset and limit', async () => {
-			const statsService = new StatsService(getApiKey())
-			const offset = 10
-			const limit = 5
-			const games = await statsService.getMostWaitlistedGames({
-				offset: offset,
-				limit: limit,
-			})
-			expect(games).toBeDefined()
-			expect(games.length).toBe(limit)
-			games.forEach((game, index) => {
-				expect(game.position).toBe(index + offset + 1)
-			})
+			expect(calls[0].url.pathname).toBe('/stats/most-waitlisted/v1')
+			expect(calls[0].url.searchParams.get('offset')).toBe('10')
+			expect(calls[0].url.searchParams.get('limit')).toBe('5')
+			expectApiKeyHeader(calls[0])
 		})
 	})
 
-	describe('getMostCollectedGames', () => {
-		test('should get most collected games correctly', async () => {
-			const statsService = new StatsService(getApiKey())
-			const games = await statsService.getMostCollectedGames()
-			expect(games).toBeDefined()
-			expect(games.length).toBeGreaterThan(0)
-		})
+	test('loads most-collected games', async () => {
+		await withMockFetch([], async (calls) => {
+			await new StatsService(API_KEY).getMostCollectedGames({
+				offset: 2,
+				limit: 3,
+			})
 
-		test('should get most collected games correctly with custom offset and limit', async () => {
-			const statsService = new StatsService(getApiKey())
-			const offset = 10
-			const limit = 5
-			const games = await statsService.getMostCollectedGames({
-				offset: offset,
-				limit: limit,
-			})
-			expect(games).toBeDefined()
-			expect(games.length).toBe(limit)
-			games.forEach((game, index) => {
-				expect(game.position).toBe(index + offset + 1)
-			})
+			expect(calls[0].url.pathname).toBe('/stats/most-collected/v1')
+			expect(calls[0].url.searchParams.get('offset')).toBe('2')
+			expect(calls[0].url.searchParams.get('limit')).toBe('3')
+			expectApiKeyHeader(calls[0])
 		})
 	})
 
-	describe('getMostPopularGames', () => {
-		test('should get most popular games correctly', async () => {
-			const statsService = new StatsService(getApiKey())
-			const games = await statsService.getMostPopularGames()
-			expect(games).toBeDefined()
-			expect(games.length).toBeGreaterThan(0)
-		})
-	})
+	test('loads most-popular games', async () => {
+		await withMockFetch([], async (calls) => {
+			await new StatsService(API_KEY).getMostPopularGames({
+				offset: 4,
+				limit: 6,
+			})
 
-	test('should get most popular games correctly with custom offset and limit', async () => {
-		const statsService = new StatsService(getApiKey())
-		const offset = 10
-		const limit = 5
-		const games = await statsService.getMostPopularGames({
-			offset: offset,
-			limit: limit,
-		})
-		expect(games).toBeDefined()
-		expect(games.length).toBe(limit)
-		games.forEach((game, index) => {
-			expect(game.position).toBe(index + offset + 1)
+			expect(calls[0].url.pathname).toBe('/stats/most-popular/v1')
+			expect(calls[0].url.searchParams.get('offset')).toBe('4')
+			expect(calls[0].url.searchParams.get('limit')).toBe('6')
+			expectApiKeyHeader(calls[0])
 		})
 	})
 })
